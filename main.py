@@ -228,26 +228,30 @@ def augment_prompt(
 
     return augmented_prompt, source_knowledge
 
-# example query to test the augmented prompt
-query = "In which decade did Billboard magazine first publish an American hit chart?"
+# example queries
+queries = [
+    "Which American-born Sinclair won the Nobel Prize for Literature in 1930?",
+    "In which decade did Billboard magazine first publish an American hit chart?",
+    "Which city does David Soul come from?"
+]
 
-print("REGULAR ANSWER:")
 # initialising Cohere client
 co = cohere.Client(api_key=COHERE_API_KEY)
-response = co.chat(
+
+# looping through each query and compare normal and augmented answers
+for query in queries:
+    print(f"NORMAL ANSWER for query: {query}")
+    response_normal = co.chat(
         model='command-r-plus',
         message=query,
     )
-print(response.text)
-
-print("AUGMENTED ANSWER:")
-# generating augmented prompt
-augmented_prompt, source_knowledge = augment_prompt(query, model=model, index=index)
-response = co.chat(
+    print(response_normal.text)
+    
+    print(f"AUGMENTED ANSWER for query: {query}")
+    augmented_prompt, source_knowledge = augment_prompt(query, model=model, index=index)
+    response_augmented = co.chat(
         model='command-r-plus',
         message=augmented_prompt,
     )
-print(response.text)
-
-# source knowledge for augmented prompt
-print(source_knowledge)
+    print(response_augmented.text)
+ 
