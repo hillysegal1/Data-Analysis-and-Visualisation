@@ -156,10 +156,10 @@ def augment_prompt(
     """
     results = [float(val) for val in list(model.encode(query))]
 
-    # retrieving top 5 results from knowledge base
+    # retrieving top 2 results from knowledge base
     query_results = index.query(
         vector=results,
-        top_k=5,
+        top_k=2,
         include_values=True,
         include_metadata=True
     )['matches']
