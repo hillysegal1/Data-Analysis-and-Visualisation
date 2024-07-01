@@ -28,7 +28,8 @@ def load_and_embedd_dataset(
         split: str = 'train',
         model: SentenceTransformer = SentenceTransformer('all-MiniLM-L6-v2'),
         text_field: str = 'context',
-        rec_num: int = 400
+        rec_num: int = 400,
+        chunk_size: int = 256  
 ) -> tuple:
     """
     Load a dataset and embedd the text field using a sentence-transformer model
@@ -38,6 +39,7 @@ def load_and_embedd_dataset(
         model: The model to use for embedding
         text_field: The field in the dataset that contains the text
         rec_num: The number of records to load and embedd
+        chunk_size: The maximum token length of each chunk
     Returns:
         tuple: A tuple containing the dataset and the embeddings
     """
@@ -47,11 +49,23 @@ def load_and_embedd_dataset(
     # Load the dataset
     dataset = load_dataset(dataset_name, 'default', split=split)
 
+    # Chunking the text data
+    def chunk_text(text, chunk_size):
+        words = text.split()
+        return [" ".join(words[i:i + chunk_size]) for i in range(0, len(words), chunk_size)]
+
     # Embed the first `rec_num` rows of the dataset
-    embeddings = model.encode(dataset[text_field][:rec_num])
+    all_embeddings = []
+    for text in dataset[text_field][:rec_num]:
+        chunks = chunk_text(text, chunk_size)
+        embeddings = model.encode(chunks)
+        all_embeddings.append(embeddings)
+
+    # Flattening the list of embeddings
+    flattened_embeddings = [emb for sublist in all_embeddings for emb in sublist]
 
     print("Done!")
-    return dataset, embeddings
+    return dataset, np.array(flattened_embeddings)
 
 DATASET_NAME = 'JacquesVlaming/Questions_Answers'
 
@@ -178,7 +192,7 @@ def augment_prompt(
 
 # queries to test
 queries = ["What is the name of the book for Jonny Brock and Clare Gorst?","Who was a descendant of Genghis Khan?",
-           ""What was the Electronic Thumb?"]
+           "What is the name of the ancient Orion mining song that immortalized Janx Spirit?"]
 
 # initialising Cohere client
 co = cohere.Client(api_key=COHERE_API_KEY)
