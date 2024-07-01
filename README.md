@@ -8,4 +8,4 @@ The dataset can be found here: https://huggingface.co/datasets/JacquesVlaming/Qu
 ## Instructions:
 This code utilizes Pinecone and Cohere API keys. Upload them into two text files named "cohere_api_keys.txt" and "pinecone_api_key.txt", respectively.
 
-Link to the project report: https://docs.google.com/document/d/1JHT3YeIqZ8ItfFh3CXfhje9f-Te9ilF_UQw91baEvTw/edit?usp=sharing
+
