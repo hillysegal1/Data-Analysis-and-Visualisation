@@ -147,7 +147,7 @@ def augment_prompt(
         index=None,
 ) -> str:
     """
-    Augment the prompt with the top 3 results from the knowledge base
+    Augment the prompt with the top 2 results from the knowledge base
     Args:
         query: The query to augment
         index: The vectorstore object
