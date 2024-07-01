@@ -46,22 +46,22 @@ def load_and_embedd_dataset(
 
     print("Loading and embedding the dataset")
 
-    # Load the dataset
+    # loading the dataset
     dataset = load_dataset(dataset_name, 'default', split=split)
 
-    # Chunking the text data
+    # chunking the text data
     def chunk_text(text, chunk_size):
         words = text.split()
         return [" ".join(words[i:i + chunk_size]) for i in range(0, len(words), chunk_size)]
 
-    # Embed the first `rec_num` rows of the dataset
+    # embedding the first `rec_num` rows of the dataset
     all_embeddings = []
     for text in dataset[text_field][:rec_num]:
         chunks = chunk_text(text, chunk_size)
         embeddings = model.encode(chunks)
         all_embeddings.append(embeddings)
 
-    # Flattening the list of embeddings
+    # flattening the list of embeddings
     flattened_embeddings = [emb for sublist in all_embeddings for emb in sublist]
 
     print("Done!")
